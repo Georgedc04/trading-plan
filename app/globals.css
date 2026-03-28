@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020617; /* Deepest Navy */
+  --foreground: #f8fafc;
+  --accent-up: #10b981;  /* Emerald 500 */
+  --accent-down: #f43f5e; /* Rose 500 */
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* Use Inter or Geist if available, otherwise high-quality sans */
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Trading Glass Effect */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Glow for "Bullish" elements */
+.glow-up {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.3));
+}
+
+/* Subtle Grid Background */
+.bg-grid {
+  background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 20px;
+}
