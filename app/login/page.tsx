@@ -9,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevents page reload on enter key
@@ -26,12 +27,10 @@ export default function Login() {
 
       const data = await res.json();
 
-      if (res.ok && data.token) {
+     if (res.ok && data.token) {
         localStorage.setItem("token", data.token);
-        localStorage.setItem("userId", data.userId); // مهم - User ID saved
-
-        // Use Next.js router for instant transition instead of window.location
-        router.push("/dashboard"); 
+        localStorage.setItem("userId", data.userId);
+        setShowSuccess(true);
       } else {
         // Display backend error message or generic fallback
         setError(data.message || data.error || "Invalid email or password.");
@@ -50,7 +49,7 @@ export default function Login() {
         
         {/* Branding Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent mb-2">
+          <h2 className="text-3xl font-bold bg-linear-to-r from-emerald-400 via-sky-400 to-cyan-300 bg-clip-text text-transparent mb-2">
             DC Trades
           </h2>
           <p className="text-slate-400 font-medium">
@@ -116,7 +115,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
+              className="w-full flex items-center justify-center gap-2 bg-linear-to-r from-sky-500 to-cyan-500 hover:from-sky-400 hover:to-cyan-400 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 disabled:opacity-70 disabled:cursor-not-allowed mt-4"
             >
               {loading ? (
                 <>
@@ -134,6 +133,25 @@ export default function Login() {
         </form>
 
       </div>
+      {showSuccess && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-slate-900 border border-emerald-700 rounded-xl p-6 w-80 shadow-xl text-center">
+              <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+                Login Successful
+              </h3>
+              <p className="text-slate-400 text-sm mb-4">
+                Redirecting to dashboard...
+              </p>
+
+              <button
+                onClick={() => router.push("/dashboard")}
+                className="px-5 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

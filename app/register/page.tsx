@@ -14,6 +14,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevents page reload on form submit
@@ -30,13 +31,9 @@ export default function Register() {
         body: JSON.stringify({ email, name, password }),
       });
 
-      if (res.ok) {
-        setSuccess(true);
-        // Wait 1.5 seconds so the user can see the success message, then redirect
-        setTimeout(() => {
-          router.push("/login");
-        }, 1500);
-      } else {
+   if (res.ok) {
+      setShowSuccessPopup(true);
+    } else {
         const data = await res.json().catch(() => ({}));
         setError(data.message || data.error || "Failed to create account. Please try again.");
         setLoading(false);
@@ -186,6 +183,25 @@ export default function Register() {
         </div>
 
       </div>
+      {showSuccessPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-slate-900 border border-emerald-700 rounded-xl p-6 w-80 shadow-xl text-center">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+              Account Created
+            </h3>
+            <p className="text-slate-400 text-sm mb-4">
+              Your account has been created successfully.
+            </p>
+
+            <button
+              onClick={() => router.push("/login")}
+              className="px-5 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

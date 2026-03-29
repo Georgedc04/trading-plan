@@ -17,6 +17,9 @@ export default function AddPlan() {
   const [pair, setPair] = useState("XAUUSD");
   const [note, setNote] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState("");
+  const [showWarning, setShowWarning] = useState("");
 
   // Your exact original logic
   const calculateDayAndWeek = (selectedDate: string) => {
@@ -35,8 +38,8 @@ export default function AddPlan() {
     const dayName = days[d.getDay()];
     setDay(dayName);
 
-    if (dayName === "Saturday" || dayName === "Sunday") {
-      alert("No trading on weekends");
+      if (dayName === "Saturday" || dayName === "Sunday") {
+      setShowWarning("No trading on weekends");
       setDate("");
       setDay("");
       setWeek("");
@@ -88,15 +91,14 @@ export default function AddPlan() {
       setLoading(false);
 
       if (!res.ok) {
-        alert(data.error || "Error saving trade");
+        setShowError(data.error || "Error saving trade");
         return;
       }
 
-      alert("Trade saved");
-      router.push("/dashboard"); // Upgraded to Next.js instant routing
+      setShowSuccess(true);
     } catch (err) {
       console.error(err);
-      alert("Network error while saving");
+      setShowError("Network error while saving");
       setLoading(false);
     }
   };
@@ -152,9 +154,10 @@ export default function AddPlan() {
                 className="w-full bg-slate-900/50 border border-slate-700 text-slate-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all cursor-pointer"
               >
                 {/* Restored your exact options */}
-                <option value="XAUUSD">XAUUSD</option>
                 <option value="EURUSD">EURUSD</option>
                 <option value="GBPUSD">GBPUSD</option>
+                <option value="XAUUSD">XAUUSD</option>
+                <option value="USDJPY">USDJPY</option>
               </select>
             </div>
 
@@ -167,7 +170,7 @@ export default function AddPlan() {
               >
                 {/* Restored your exact options */}
                 <option value="London">London</option>
-                <option value="NY">NY</option>
+                <option value="New York">New York</option>
               </select>
             </div>
             
@@ -294,6 +297,66 @@ export default function AddPlan() {
           </button>
         </div>
       </form>
+      {showSuccess && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 w-80 shadow-xl text-center">
+            <h3 className="text-lg font-semibold text-emerald-400 mb-2">
+              Trade Saved
+            </h3>
+            <p className="text-slate-400 text-sm mb-4">
+              Your trade has been added successfully.
+            </p>
+
+            <button
+              onClick={() => router.push("/dashboard")}
+              className="px-5 py-2 rounded-lg bg-emerald-500 text-white hover:bg-emerald-600"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showError && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-slate-900 border border-rose-700 rounded-xl p-6 w-80 shadow-xl text-center">
+              <h3 className="text-lg font-semibold text-rose-400 mb-2">
+                Error
+              </h3>
+              <p className="text-slate-400 text-sm mb-4">
+                {showError}
+              </p>
+
+              <button
+                onClick={() => setShowError("")}
+                className="px-5 py-2 rounded-lg bg-rose-500 text-white hover:bg-rose-600"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showWarning && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-slate-900 border border-yellow-600 rounded-xl p-6 w-80 shadow-xl text-center">
+              <h3 className="text-lg font-semibold text-yellow-400 mb-2">
+                Warning
+              </h3>
+              <p className="text-slate-400 text-sm mb-4">
+                {showWarning}
+              </p>
+
+              <button
+                onClick={() => setShowWarning("")}
+                className="px-5 py-2 rounded-lg bg-yellow-500 text-black hover:bg-yellow-400"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
     </div>
+    
   );
 }
